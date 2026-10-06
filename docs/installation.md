@@ -1,24 +1,24 @@
-# Installation
+# 安装
 
 > [!CAUTION]
-> Wild Kernels is not responsible for bricked devices or damage. By flashing, you assume all risk. Back up your data and understand the risks before flashing.
+> Wild Kernels 不对变砖的设备或损坏负责。刷写即表示您承担全部风险。刷写前请备份数据并了解风险。
 
-## Choose your method
+## 选择刷写方法
 
-| Method | When to use | Requires root | Guide |
+| 方法 | 适用场景 | 需要 Root | 指南 |
 |--------|-------------|---------------|-------|
-| **Kernel Flasher** | Upgrading with root already available, no PC needed | Yes | [kernelflasher.md](kernelflasher.md) |
-| **magiskboot** | When you want to flash a pre-patched `boot.img` directly (no pre-rooted setup required) | No | [magiskboot.md](magiskboot.md) |
+| **Kernel Flasher** | 已有 Root 时升级，无需电脑 | 是 | [kernelflasher.md](kernelflasher.md) |
+| **magiskboot** | 想直接刷入预修补的 `boot.img`（无需预先 Root 的环境） | 否 | [magiskboot.md](magiskboot.md) |
 
-## Prerequisites
+## 前置条件
 
-- [ ] GKI 2.0 device with an unlocked bootloader
-- [ ] Full backup (at minimal the `boot` partition or have a stock unmodified `boot.img`)
-- [ ] Correct AnyKernel3 ZIP for your kernel version from [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases)
+- [ ] 已解锁 bootloader 的 GKI 2.0 设备
+- [ ] 完整备份（至少备份 `boot` 分区，或持有未修改的原厂 `boot.img`）
+- [ ] 与内核版本匹配的 AnyKernel3 ZIP，来自 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases)
 
-### Supported versions
+### 支持的版本
 
-Only GKI 2.0 is supported — check marks show builds provided by this project:
+仅支持 GKI 2.0 —— 勾号表示本项目提供的构建：
 
 | Pre-GKI | GKI 1.0 | GKI 2.0 |
 |---------|---------|---------|
@@ -30,21 +30,21 @@ Only GKI 2.0 is supported — check marks show builds provided by this project:
 | 4.19.x | | 6.6.x-android15 ✓ |
 | | | 6.12.x-android16 ✓ |
 
-For Pre-GKI or GKI 1.0 kernels, contact [@TheWildJames](https://t.me/TheWildJames) to discuss possiblities.
+对于 Pre-GKI 或 GKI 1.0 内核，请联系 [@TheWildJames](https://t.me/TheWildJames) 讨论可行性。
 
 > [!IMPORTANT]
-> Match by the full kernel version (e.g., `6.1.x-androidXX`) — your device's Android version and the `androidXX` in the kernel version are not necessarily the same. For example, as of writing, a Google Pixel 8 is on `6.1.157-android14` while the system Android is 17.
+> 请按完整内核版本（例如 `6.1.x-androidXX`）匹配——设备的 Android 版本与内核版本中的 `androidXX` 不一定相同。例如，撰写本文时，Google Pixel 8 运行在 `6.1.157-android14` 上，而系统 Android 版本为 17。
 
-## After flashing
+## 刷写之后
 
-See [Post-Install — Verify & Finish Setup](post-install.md) for manager install, SUSFS module, and verification steps.
+管理器的安装、SUSFS 模块与验证步骤，请参阅[安装后 — 验证并完成设置](post-install.md)。
 
 ---
 
-## Other methods
+## 其他方法
 
 <details>
-<summary>Alternative flashing tools</summary>
+<summary>其他刷写工具</summary>
 
 - [PixelFlasher](https://github.com/badabing2005/PixelFlasher)
 - [Franco Kernel Manager](https://play.google.com/store/apps/details?id=com.franco.kernel&hl=en_CA&pli=1)
@@ -54,6 +54,6 @@ See [Post-Install — Verify & Finish Setup](post-install.md) for manager instal
 ---
 
 > [!NOTE]
-> Portions of this documentation are adapted from the official [KernelSU documentation](https://kernelsu.org/).
+> 本文档部分内容改编自官方 [KernelSU 文档](https://kernelsu.org/)。
 
-See also: [Kernel Features Documentation](features.md)
+另见：[内核特性文档](features.md)
