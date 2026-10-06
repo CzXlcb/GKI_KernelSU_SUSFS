@@ -1,4 +1,4 @@
-name: Commit Status Report
+name: "提交状态报告"
 
 on:
   workflow_dispatch:
