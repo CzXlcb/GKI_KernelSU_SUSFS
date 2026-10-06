@@ -1,4 +1,4 @@
-name: Clear Cache Releases
+name: "清理缓存发布"
 
 on:
   workflow_dispatch:
