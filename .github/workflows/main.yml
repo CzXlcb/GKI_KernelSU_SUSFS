@@ -1,4 +1,4 @@
-name: Build Kernels
+name: "构建内核"
 
 permissions:
   contents: write
