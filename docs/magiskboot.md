@@ -1,23 +1,23 @@
-# Patch boot.img Manually (magiskboot)
+# 手动修补 boot.img（magiskboot）
 
-Use the [official magiskboot build](https://github.com/topjohnwu/Magisk/releases) — works on Android and Linux.
+使用[官方 magiskboot 构建](https://github.com/topjohnwu/Magisk/releases)——支持 Android 和 Linux。
 
-See [Installation](installation.md) for prerequisites, supported versions, and risks.
+前置条件、支持的版本与风险请参阅[安装](installation.md)。
 
-**Platforms:** [Android](#-android) · [Linux](#-linux)
+**平台：** [Android](#-android) · [Linux](#-linux)
 
-## Preparation
+## 准备
 
-1. Get your device's stock `boot.img`.
-2. Download the AnyKernel3 ZIP for your kernel version from [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases).
-3. Unpack the ZIP and get the `Image` file (the KernelSU kernel).
+1. 获取设备的原厂 `boot.img`。
+2. 从 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) 下载与内核版本匹配的 AnyKernel3 ZIP。
+3. 解压 ZIP 并取出 `Image` 文件（KernelSU 内核）。
 
 ---
 
 <details>
-<summary><b> Android</b> — via adb + <code>libmagiskboot.so</code></summary>
+<summary><b>Android</b> — 通过 adb + <code>libmagiskboot.so</code></summary>
 
-Folder structure on device (`/data/local/tmp/`):
+设备上的目录结构（`/data/local/tmp/`）：
 
 ```
 /data/local/tmp/
@@ -26,44 +26,44 @@ Folder structure on device (`/data/local/tmp/`):
 └── Image
 ```
 
-1. Download latest Magisk from [GitHub Releases](https://github.com/topjohnwu/Magisk/releases).
-2. Rename `Magisk-*(version).apk` to `Magisk-*.zip` and unzip.
-3. Push `libmagiskboot.so` to device:
+1. 从 [GitHub Releases](https://github.com/topjohnwu/Magisk/releases) 下载最新的 Magisk。
+2. 将 `Magisk-*(version).apk` 重命名为 `Magisk-*.zip` 并解压。
+3. 将 `libmagiskboot.so` 推送到设备：
   ```sh
   adb push Magisk-*/lib/arm64-v8a/libmagiskboot.so /data/local/tmp/magiskboot
   ```
-4. Push `boot.img` and `Image`:
+4. 推送 `boot.img` 和 `Image`：
   ```sh
   adb push boot.img /data/local/tmp/
   adb push Image /data/local/tmp/
   ```
-5. Make executable:
+5. 赋予执行权限：
   ```sh
   adb shell
   cd /data/local/tmp/
   chmod +x magiskboot
   ```
-6. Unpack:
+6. 解包：
   ```sh
   ./magiskboot unpack boot.img
   ```
-7. Replace kernel:
+7. 替换内核：
   ```sh
   mv -f Image kernel
   ```
-8. Repack:
+8. 重新打包：
   ```sh
   ./magiskboot repack boot.img
   ```
-9. Test: `fastboot boot new-boot.img`
-10. Flash: `fastboot flash boot new-boot.img`
+9. 测试：`fastboot boot new-boot.img`
+10. 刷入：`fastboot flash boot new-boot.img`
 
 </details>
 
 <details>
-<summary><b> Linux</b> — official magiskboot</summary>
+<summary><b>Linux</b> — 官方 magiskboot</summary>
 
-Folder structure on PC:
+电脑上的目录结构：
 
 ```
 .
@@ -72,12 +72,12 @@ Folder structure on PC:
 └── Image
 ```
 
-1. Prepare `boot.img` and `Image` on PC.
-2. Make executable: `chmod +x magiskboot`
-3. Unpack: `./magiskboot unpack boot.img`
-4. Replace: `mv -f Image kernel`
-5. Repack: `./magiskboot repack boot.img`
-6. Test: `fastboot boot new-boot.img`
-7. Flash: `fastboot flash boot new-boot.img`
+1. 在电脑上准备好 `boot.img` 和 `Image`。
+2. 赋予执行权限：`chmod +x magiskboot`
+3. 解包：`./magiskboot unpack boot.img`
+4. 替换：`mv -f Image kernel`
+5. 重新打包：`./magiskboot repack boot.img`
+6. 测试：`fastboot boot new-boot.img`
+7. 刷入：`fastboot flash boot new-boot.img`
 
 </details>
