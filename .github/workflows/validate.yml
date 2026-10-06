@@ -1,4 +1,4 @@
-name: Validate
+name: "校验"
 
 on:
   push:
