@@ -1,28 +1,28 @@
-# Install with Kernel Flasher
+# 使用 Kernel Flasher 安装
 
 > [!NOTE]
-> This method is more convenient when upgrading KernelSU and can be done without a computer.
+> 此方法在升级 KernelSU 时更方便，且无需电脑即可完成。
 
-See [Installation](installation.md) for prerequisites, supported versions, and risks.
+前置条件、支持的版本与风险请参阅[安装](installation.md)。
 
-## Prerequisites
+## 前置条件
 
-- Root access already granted to the flashing app (for first install from stock without root, use recovery/fastboot — see [magiskboot](magiskboot.md))
-- AnyKernel3 ZIP matching your kernel version from [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases)
+- 刷写应用已获得 Root 权限（若从未 Root 的原厂状态首次安装，请使用 recovery/fastboot —— 参阅 [magiskboot](magiskboot.md)）
+- 与内核版本匹配的 AnyKernel3 ZIP，来自 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases)
 
-## Steps
+## 步骤
 
-1. **Download the AnyKernel3 ZIP** from the latest [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) page.
-2. **Open the Kernel Flasher app**, grant root permissions when prompted.
-3. **Select the AnyKernel3 ZIP** and flash. Do not interrupt.
-4. **Reboot** when prompted and verify the manager shows the expected version.
+1. **下载 AnyKernel3 ZIP**：从最新的 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) 页面下载。
+2. **打开 Kernel Flasher 应用**，提示时授予 Root 权限。
+3. **选择 AnyKernel3 ZIP 并刷入**。请勿中断。
+4. **提示时重启**，并确认管理器显示预期版本。
 
-## Supported flashing apps
+## 支持的刷写应用
 
-| App | Notes |
+| 应用 | 备注 |
 |-----|-------|
-| [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher) | Recommended, actively maintained |
+| [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher) | 推荐，积极维护中 |
 
-## After flashing
+## 刷写之后
 
-See [Post-Install — Verify & Finish Setup](post-install.md).
+参阅[安装后 — 验证并完成设置](post-install.md)。
