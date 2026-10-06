@@ -1,50 +1,50 @@
-# Post-Install — Verify & Finish Setup
+# 安装后 — 验证并完成设置
 
-After flashing a Wild Kernels GKI kernel, do these checks in order.
+刷写 Wild Kernels GKI 内核后，请按顺序完成以下检查。
 
-## 1. Download matching manager — KernelSU / KernelSU-Next / ReSukiSU
+## 1. 下载匹配的管理器 — KernelSU / KernelSU-Next / ReSukiSU
 
-- [ ] Download the `manager-apk-*` from the same [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) page you got the kernel from.
-- [ ] Install / update it over any existing manager.
-- [ ] Open the manager — it should show the kernel version you just flashed (e.g. `6.1.x-androidXX-Wild`) and report "Working".
+- [ ] 从获取内核的同一 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) 页面下载 `manager-apk-*`。
+- [ ] 安装 / 覆盖更新到任何现有管理器之上。
+- [ ] 打开管理器——它应显示您刚刚刷写的内核版本（例如 `6.1.x-androidXX-Wild`）并报告 "Working"。
 
 ## 2. SUSFS
 
-- [ ] In the manager, install the [sidex15/susfs4ksu-module](https://github.com/sidex15/susfs4ksu-module).
-- [ ] Reboot.
+- [ ] 在管理器中安装 [sidex15/susfs4ksu-module](https://github.com/sidex15/susfs4ksu-module)。
+- [ ] 重启。
 
-## 3. Meta Module (if mounting modules)
+## 3. 元模块（如需挂载模块）
 
-If you need to mount modules, install one:
+如果需要挂载模块，请安装其中一个：
 
-- [ ] [NoMount](https://github.com/maxsteeel/nomount) (Recommended) — `NoMount-metamodule-*commit*.zip` from [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases)
-- [ ] [Mountify](https://github.com/backslashxx/mountify) — latest compatible module
+- [ ] [NoMount](https://github.com/maxsteeel/nomount)（推荐）— 来自 [Releases](https://github.com/WildKernels/GKI_KernelSU_SUSFS/releases) 的 `NoMount-metamodule-*commit*.zip`
+- [ ] [Mountify](https://github.com/backslashxx/mountify) — 最新兼容模块
 
 > [!NOTE]
-> Only one is required. Compatibility with SUSFS shifts with updates.
+> 只需要其中一个。与 SUSFS 的兼容性会随更新而变化。
 
 ## 4. DroidSpaces
 
-- [ ] Download the app: [ravindu644/Droidspaces-OSS](https://github.com/ravindu644/Droidspaces-OSS)
+- [ ] 下载应用：[ravindu644/Droidspaces-OSS](https://github.com/ravindu644/Droidspaces-OSS)
 
-## 5. Troubleshooting
+## 5. 故障排查
 
 <details>
-<summary><b> Common issues</b></summary>
+<summary><b>常见问题</b></summary>
 
-- **General issues** — try restarting your device.
-- **Bootloop** — restore a stock boot.img via fastboot/recovery.
-- **Manager and kernel version do not match (e.g. 31000 != 32000)** — install the latest kernel and manager from the release and reboot.
-- **Root not working** — ensure the manager matches the flashed flavor (KernelSU / KernelSU-Next / ReSukiSU).
+- **一般问题** — 尝试重启设备。
+- **启动循环（Bootloop）** — 通过 fastboot/recovery 恢复原厂 boot.img。
+- **管理器与内核版本不匹配（例如 31000 != 32000）** — 从发布中安装最新的内核和管理器并重启。
+- **Root 不工作** — 确保管理器与刷入的实现（KernelSU / KernelSU-Next / ReSukiSU）匹配。
 
 </details>
 
 <details>
-<summary><b> Nuclear option</b></summary>
+<summary><b>核选项</b></summary>
 
-Uninstall all modules and reboot, then delete all files and folders in `/data/adb`. Reboot again.
+卸载所有模块并重启，然后删除 `/data/adb` 中的所有文件和文件夹。再次重启。
 
 > [!CAUTION]
-> This wipes all KernelSU/Magisk module data — only use if nothing else works.
+> 这会清除所有 KernelSU/Magisk 模块数据——仅在其他方法都无效时使用。
 
 </details>
