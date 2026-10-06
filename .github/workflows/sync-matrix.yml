@@ -1,4 +1,4 @@
-name: Sync Kernel Matrix
+name: "同步内核矩阵"
 
 # Adds new upstream monthly branches to the build matrix via PR against
 # main. If a sync PR is already open, it is updated in place (the sync
