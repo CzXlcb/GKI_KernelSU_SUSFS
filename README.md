@@ -1,6 +1,6 @@
 <div align="center">
 
-# Wild Kernels for Android devices running GKI 2.0 (5.10+)
+# Wild Kernels — 适用于运行 GKI 2.0（5.10+）的 Android 设备
 
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![Third-Party Notices](https://img.shields.io/badge/notices-THIRD__PARTY_NOTICES-lightgrey.svg)](THIRD_PARTY_NOTICES.md)
@@ -8,59 +8,59 @@
 </div>
 
 > [!CAUTION]
-> Wild Kernels is not responsible for bricked devices or damage. By flashing, you assume all risk. Back up your data and understand the risks before flashing.
+> Wild Kernels 不对变砖的设备或造成的损坏负责。刷入即视为你自行承担全部风险。刷机前请备份数据并充分了解风险。
 
 ---
 
-## About
+## 关于
 
-Generic kernels built on [Google's GKI sources](https://android.googlesource.com/kernel/common/) with KernelSU and SUSFS for root hiding and detection evasion — broad compatibility, not guaranteed for every device.
+基于 [Google GKI 源码](https://android.googlesource.com/kernel/common/) 构建的通用内核，集成 KernelSU 与 SUSFS，用于 Root 隐藏与检测规避 —— 具有广泛的兼容性，但不能保证适用于每台设备。
 
 ---
 
-## Features
+## 特性
 
-- **KernelSU / KernelSU-Next / ReSukiSU** — root implementations
-- **susfs4ksu** — root hiding (incl. Ptrace Leak Fix, Unicode Fix)
-- **NoMount / Mountify** — mount metamodules
-- **Baseband Guard** — partition protection
-- **Networking** — WireGuard, BBR, IPSet, CIFS
+- **KernelSU / KernelSU-Next / ReSukiSU** — Root 实现
+- **susfs4ksu** — Root 隐藏（包括 Ptrace Leak Fix、Unicode Fix）
+- **NoMount / Mountify** — 挂载元模块
+- **Baseband Guard** — 分区保护
+- **Networking** — WireGuard、BBR、IPSet、CIFS
 - **TMPFS** — xattr / POSIX ACLs
 - **BPF** — BTF / eBPF / FUSE-BPF
-- **Performance** — incl. NTSync
-- **DroidSpaces** — container runtime
+- **Performance** — 包括 NTSync
+- **DroidSpaces** — 容器运行时
 
 > [!TIP]
-> Full documentation: [Wiki](https://github.com/WildKernels/GKI_KernelSU_SUSFS/wiki)
+> 完整文档：[Wiki](https://github.com/WildKernels/GKI_KernelSU_SUSFS/wiki)
 
 ---
 
-## Build Your Own Kernel
+## 构建你自己的内核
 
-Fork the repository and follow **[Build Your Own Kernel](docs/build-from-fork.md)** to select one kernel family, patch level, root implementation, and feature set in GitHub Actions.
-
----
-
-## Installation
-
-See **[Installation Guide](https://github.com/WildKernels/GKI_KernelSU_SUSFS/wiki/Installation)**.
+Fork 本仓库，然后按照 **[构建你自己的内核](docs/build-from-fork.md)** 的指引，在 GitHub Actions 中选择一个内核分支、补丁级别、Root 实现和功能集。
 
 ---
 
-## Our Projects
+## 安装
 
-| Device | Repository | Description |
+参见 **[安装指南](https://github.com/WildKernels/GKI_KernelSU_SUSFS/wiki/Installation)**。
+
+---
+
+## 我们的项目
+
+| 设备 | 仓库 | 描述 |
 |--------|------------|-------------|
-| **Multi** | [GKI_KernelSU_SUSFS](https://github.com/WildKernels/GKI_KernelSU_SUSFS) | Google GKI sources — built to be generic and work across many devices |
-| **Pixel** | [Sultan_KernelSU_SUSFS](https://github.com/WildKernels/Sultan_KernelSU_SUSFS) | Custom kernels for specific Pixel devices — built from Sultan sources |
-| **Samsung** | [Samsung_KernelSU_SUSFS](https://github.com/WildKernels/Samsung_KernelSU_SUSFS) | Built from Samsung sources and manifest |
-| **OnePlus** | [OnePlus_KernelSU_SUSFS](https://github.com/WildKernels/OnePlus_KernelSU_SUSFS) | Built from OnePlus sources and manifest |
+| **多机型** | [GKI_KernelSU_SUSFS](https://github.com/WildKernels/GKI_KernelSU_SUSFS) | Google GKI 源码 —— 通用内核，适用于多种设备 |
+| **Pixel** | [Sultan_KernelSU_SUSFS](https://github.com/WildKernels/Sultan_KernelSU_SUSFS) | 针对特定 Pixel 设备的定制内核 —— 基于 Sultan 源码构建 |
+| **Samsung** | [Samsung_KernelSU_SUSFS](https://github.com/WildKernels/Samsung_KernelSU_SUSFS) | 基于 Samsung 源码与 manifest 构建 |
+| **OnePlus** | [OnePlus_KernelSU_SUSFS](https://github.com/WildKernels/OnePlus_KernelSU_SUSFS) | 基于 OnePlus 源码与 manifest 构建 |
 
 ---
 
-## Special Thanks
+## 特别鸣谢
 
-**These amazing people and projects make this possible:**
+**以下杰出的人员和项目让这一切成为可能：**
 
 - **KernelSU** — [tiann](https://github.com/tiann/KernelSU)
 - **KernelSU-Next** — [rifsxd](https://github.com/KernelSU-Next/KernelSU-Next)
@@ -77,15 +77,15 @@ See **[Installation Guide](https://github.com/WildKernels/GKI_KernelSU_SUSFS/wik
 - **Sultan Kernels (Pixel)** — [kerneltoast](https://github.com/kerneltoast)
 - **Device Boot Fix** — [Boot fix commit](https://github.com/Anything-at-25-00/android_kernel_common_android12-5.10/commit/2476d262b597fe8af82cfb7aaf96676f51c6b4ed)
 
-**Contributors to this repository:**
+**本仓库的贡献者：**
 
 [![Contributors](https://contrib.rocks/image?repo=WildKernels/GKI_KernelSU_SUSFS)](https://github.com/WildKernels/GKI_KernelSU_SUSFS/graphs/contributors)
 
-Have an idea or improvement in mind? Contributions are always welcome — feel free to open a pull request or share your thoughts!
+有想法或改进建议？欢迎贡献 —— 欢迎提交 Pull Request 或分享你的想法！
 
 ---
 
-## Community
+## 社区
 
 <div align="center">
 
@@ -94,14 +94,14 @@ Have an idea or improvement in mind? Contributions are always welcome — feel f
 
 </div>
 
-Need help? Open an issue in this repository or reach out on Telegram. Please ask in the [WildKernelsTG group](https://t.me/WildKernelsTG) first for general issues. DMs to [@TheWildJames](https://t.me/TheWildJames) are always open — use for priority / very important, or if you just want to talk and learn.
+需要帮助？请在本仓库提交 Issue 或通过 Telegram 联系。一般问题请先在 [WildKernelsTG 群组](https://t.me/WildKernelsTG) 提问。私信 [@TheWildJames](https://t.me/TheWildJames) 随时开放 —— 适用于紧急 / 非常重要的问题，或者你只是想聊聊、学习一下。
 
 ---
 
-## Donations
+## 捐赠
 
 > [!IMPORTANT]
-> **Kind note:** A donation is truly just a gift — not a payment for support, features, or priority. It doesn't unlock anything extra on our side and doesn't change how we help you; everyone gets the same community support whether you donate or not. Think of it as a kind “thank you” to help keep development going — not a transaction. If you do choose to give, we're genuinely grateful, but please never feel obligated.
+> **温馨提示：** 捐赠仅仅是一份礼物 —— 不是对支持、功能或优先级的付费。它不会在我们这边解锁任何额外的东西，也不会改变我们帮助你的方式；无论是否捐赠，每个人都获得同样的社区支持。请把它当作一句善意的"谢谢"，用来帮助开发持续进行 —— 而不是一笔交易。如果你选择捐赠，我们由衷感谢，但请不要有任何压力。
 
 - PayPal: [bauhd@outlook.com](mailto:bauhd@outlook.com)
 - Card: <https://buy.stripe.com/5kQ28sdi08Nr0Xc2fU5os00>
