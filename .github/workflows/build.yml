@@ -1,4 +1,4 @@
-name: Kernel Build Process
+name: "内核构建流程"
 permissions:
   contents: write
   actions: write
