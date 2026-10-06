@@ -1,40 +1,40 @@
-# Build a Kernel in Your Fork
+# 在您的 Fork 中构建内核
 
-This guide shows how to fork the repository, build one specific GKI kernel with GitHub Actions, and download the result. You do not need a local Linux build environment for the normal workflow.
+本指南介绍如何 fork 本仓库、使用 GitHub Actions 构建一个指定的 GKI 内核，以及下载构建产物。常规工作流无需本地 Linux 构建环境。
 
 > [!CAUTION]
-> A successful build does not guarantee that a kernel will boot on a particular device. Confirm the device's GKI/KMI family, keep the stock `boot.img`, and have a tested recovery method before flashing. See the [Installation Guide](installation.md) before using an artifact.
+> 构建成功并不能保证内核一定能在特定设备上启动。请确认设备的 GKI/KMI 家族，保留原厂 `boot.img`，并在刷写前备好经过验证的恢复手段。使用构建产物前，请先参阅[安装指南](installation.md)。
 
-## 1. Fork the Repository
+## 1. Fork 仓库
 
-1. Open [WildKernels/GKI_KernelSU_SUSFS](https://github.com/WildKernels/GKI_KernelSU_SUSFS).
-2. Select **Fork**, choose your account, and create the fork.
-3. Open the **Actions** tab in your fork.
-4. If GitHub says workflows are disabled, select **I understand my workflows, go ahead and enable them**.
+1. 打开 [WildKernels/GKI_KernelSU_SUSFS](https://github.com/WildKernels/GKI_KernelSU_SUSFS)。
+2. 选择 **Fork**，选择您的账户，创建 fork。
+3. 在您的 fork 中打开 **Actions** 选项卡。
+4. 如果 GitHub 提示工作流已被禁用，请选择 **I understand my workflows, go ahead and enable them**（我理解我的工作流，继续并启用它们）。
 
-Normal kernel builds use the repository's built-in `GITHUB_TOKEN`. You do not need to create a personal access token or repository secret.
+常规内核构建使用仓库内置的 `GITHUB_TOKEN`。您无需创建个人访问令牌或仓库密钥。
 
-If a build reports that the token cannot create releases or update Actions data, open **Settings → Actions → General → Workflow permissions** in your fork and allow **Read and write permissions**. Organization policy can prevent a repository from granting those permissions.
+如果构建报告令牌无法创建 Release 或更新 Actions 数据，请在您的 fork 中打开 **Settings → Actions → General → Workflow permissions**，并允许 **Read and write permissions**（读写权限）。组织策略可能会阻止仓库授予这些权限。
 
 > [!NOTE]
-> Forking this repository copies the build orchestration. Kernel sources, root implementations, SUSFS, patches, AnyKernel3, managers, and other components are still fetched from their configured upstream repositories.
+> Fork 本仓库会复制构建编排逻辑。内核源码、Root 实现、SUSFS、补丁、AnyKernel3、管理器等组件仍会从其配置的上游仓库拉取。
 
-## 2. Identify the Correct Kernel Family
+## 2. 确定正确的内核家族
 
-Choose the kernel from the device's stock kernel/KMI branch—not only from the Android userspace version shown in Settings. For example, a phone running Android 15 may still use an `android14-6.1` kernel branch.
+请根据设备的原厂内核/KMI 分支选择内核，而不仅仅依据设置中所显示的 Android 用户空间版本。例如，运行 Android 15 的手机可能仍在使用 `android14-6.1` 内核分支。
 
-You can start by checking the running kernel:
+可以先检查当前运行的内核：
 
 ```bash
 adb shell uname -r
 ```
 
-If the output does not identify the Android common-kernel generation, check the device's stock firmware information or OEM kernel sources before building.
+如果输出无法确定 Android common-kernel 代际，请在构建前查阅设备的原厂固件信息或 OEM 内核源码。
 
-The workflow currently exposes these families:
+当前工作流暴露以下家族：
 
-| Workflow selection | Android common-kernel generation | Linux series |
-|---|---:|---:|
+| 工作流选择 | Android common-kernel 代际 | Linux 系列 |
+|---|---|---:|---:|
 | `5.10.x-android12` | Android 12 | 5.10 |
 | `5.10.x-android13` | Android 13 | 5.10 |
 | `5.15.x-android13` | Android 13 | 5.15 |
@@ -43,78 +43,78 @@ The workflow currently exposes these families:
 | `6.6.x-android15` | Android 15 | 6.6 |
 | `6.12.x-android16` | Android 16 | 6.12 |
 
-The **OS patch level** field accepts one of the following:
+**OS patch level（系统补丁级别）** 字段接受以下取值之一：
 
-- A patch date present in the selected family's config, such as `2025-01`.
-- A numeric Linux sublevel present in that config, such as `118`. A sublevel can occur under more than one patch date, in which case every matching row is built.
-- `lts`, which builds the current tip of that family's configured LTS branch.
-- `All`, which builds every configured row for the selected family.
+- 所选家族配置中存在的补丁日期，例如 `2025-01`。
+- 该配置中存在的数字 Linux 子版本号，例如 `118`。一个子版本号可能对应多个补丁日期，这种情况下每个匹配的行都会被构建。
+- `lts`，构建该家族所配置 LTS 分支的当前最新提交。
+- `All`，构建所选家族的所有已配置行。
 
-The matrix files under [`.github/config/`](../.github/config/) are the source of truth for available dates and sublevels. To guarantee one matrix row, select a unique patch date or `lts`; if you use a numeric sublevel, check the config first to confirm it occurs only once.
+[`.github/config/`](../.github/config/) 下的矩阵文件是可用日期与子版本号的权威来源。要确保只构建一行，请选择唯一的补丁日期或 `lts`；如果使用数字子版本号，请先查看配置确认它只出现一次。
 
 > [!WARNING]
-> Do not leave **Kernel Version**, **OS patch level**, and **Root Flavor** set to `All` for a first test. Those defaults fan out across every exposed family, every matching matrix row, and all three root implementations, potentially creating hundreds of kernel jobs.
+> 首次测试时切勿将 **Kernel Version**、**OS patch level** 和 **Root Flavor** 全部设为 `All`。这些默认值会在每个暴露的家族、每个匹配的矩阵行以及全部三种 Root 实现间展开，可能产生数百个内核构建任务。
 
-## 3. Run One Build in the GitHub UI
+## 3. 在 GitHub UI 中运行一次构建
 
-1. Open **Actions** in your fork.
-2. Select **Build Kernels**.
-3. Select **Run workflow**.
-4. Choose the branch containing your desired changes, normally `main`.
-5. Set a specific **Kernel Version**, **OS patch level**, and **Root Flavor**.
-6. Select **Run workflow**.
+1. 在您的 fork 中打开 **Actions**。
+2. 选择 **构建内核**。
+3. 选择 **Run workflow**（运行工作流）。
+4. 选择包含您所需更改的分支，通常为 `main`。
+5. 设置具体的 **Kernel Version**、**OS patch level** 和 **Root Flavor**。
+6. 选择 **Run workflow**。
 
-Recommended settings for a first build:
+首次构建的推荐设置：
 
-| Input | Recommended value | Reason |
+| 输入 | 推荐值 | 原因 |
 |---|---|---|
-| Release Type | `Action` | Runs the build without creating a numbered `rN` release. It still replaces the fork's `nightly` prerelease. |
-| Use cache | `false` for the first build | Avoids creating cache releases while testing the fork. Enable it later to speed up repeat builds. |
-| Kernel Version | One exact family | Prevents an all-family fan-out. |
-| OS patch level | One unique date or `lts` | Selects one matrix row. A numeric sublevel can match multiple dates. |
-| Kernel Branding | Your short brand name | Changes the kernel's local version string. |
-| Commit mode | `verified` | Uses the project's verified component pins where pins are supported. |
-| Root Flavor | One implementation | Produces one kernel instead of KernelSU-Next, KernelSU, and ReSukiSU builds. `SukiSU-Ultra`, `KowSU`, and `No Root` are opt-in only and are not part of `All`. `KowSU` cannot be combined with SUSFS. |
-| Feature toggles | Keep the defaults initially | Establishes a known baseline before customizing features. |
-| Test release notes | `false` | `true` skips the kernel builds and only previews release notes. |
+| Release Type | `Action` | 运行构建但不创建带编号的 `rN` 版本。它仍会替换 fork 的 `nightly` 预发布版本。 |
+| Use cache | 首次构建选 `false` | 避免在测试 fork 时创建缓存发布。之后再启用以加速重复构建。 |
+| Kernel Version | 一个确定的家族 | 防止全家族展开。 |
+| OS patch level | 一个唯一的日期或 `lts` | 只选择一行矩阵。数字子版本号可能匹配多个日期。 |
+| Kernel Branding | 您的简短品牌名 | 更改内核的本地版本字符串。 |
+| Commit mode | `verified` | 在支持版本固定的地方使用项目的已验证组件固定版本。 |
+| Root Flavor | 一种实现 | 只生成一个内核，而不是 KernelSU-Next、KernelSU 和 ReSukiSU 三种构建。`SukiSU-Ultra`、`KowSU` 和 `No Root` 仅限可选加入，不属于 `All`。`KowSU` 不能与 SUSFS 组合。 |
+| Feature toggles | 最初保持默认 | 在自定义功能之前建立已知基线。 |
+| Test release notes | `false` | 设为 `true` 会跳过内核构建，仅预览发布说明。 |
 
-Root Flavor choices are `KernelSU-Next`, `KernelSU`, `ReSukiSU`, `SukiSU-Ultra`, `KowSU`, `No Root`, or `All`. `All` builds only KernelSU-Next, KernelSU, and ReSukiSU. `KowSU` always tracks the latest `master` tip and errors out if SUSFS is enabled. `No Root` produces a kernel with no root implementation (and no manager APK). Install the matching manager after flashing a rooted build; see [Post-install Setup](post-install.md).
+Root Flavor 可选项为 `KernelSU-Next`、`KernelSU`、`ReSukiSU`、`SukiSU-Ultra`、`KowSU`、`No Root` 或 `All`。`All` 只构建 KernelSU-Next、KernelSU 和 ReSukiSU。`KowSU` 始终跟踪最新的 `master` 顶端提交，启用 SUSFS 时会报错。`No Root` 生成不带 Root 实现的内核（也没有管理器 APK）。刷写带 Root 的构建后请安装匹配的管理器；参见[安装后设置](post-install.md)。
 
-### Example: Current Android 15 / Linux 6.6 LTS
+### 示例：当前 Android 15 / Linux 6.6 LTS
 
-Use:
+使用：
 
-| Input | Value |
+| 输入 | 值 |
 |---|---|
 | Kernel Version | `6.6.x-android15` |
 | OS patch level | `lts` |
 | Commit mode | `verified` |
 | Root Flavor | `KernelSU` |
 
-The workflow syncs `common-android15-6.6-lts` and reads the actual numeric `SUBLEVEL` from the synced kernel Makefile. Because that branch moves, a later LTS build can produce a newer sublevel.
+工作流会同步 `common-android15-6.6-lts` 并从同步后的内核 Makefile 中读取实际的数字 `SUBLEVEL`。由于该分支会移动，之后的 LTS 构建可能产生更新的子版本号。
 
-### Example: Android 14 / Linux 6.1.118
+### 示例：Android 14 / Linux 6.1.118
 
-Use:
+使用：
 
-| Input | Value |
+| 输入 | 值 |
 |---|---|
 | Kernel Version | `6.1.x-android14` |
-| OS patch level | `118` or `2025-01` |
+| OS patch level | `118` 或 `2025-01` |
 | Commit mode | `verified` |
 | Root Flavor | `KernelSU` |
 
-Both selectors resolve to the configured `2025-01` row. The expected artifact prefix is:
+两个选择器都会解析为已配置的 `2025-01` 行。预期的构建产物前缀为：
 
 ```text
 6.1.118-android14-2025-01-KernelSU
 ```
 
-## 4. Run the Same Build with GitHub CLI
+## 4. 使用 GitHub CLI 运行相同的构建
 
-Install and authenticate [GitHub CLI](https://cli.github.com/), then replace `YOUR_USERNAME` with the owner of the fork.
+安装并认证 [GitHub CLI](https://cli.github.com/)，然后将 `YOUR_USERNAME` 替换为 fork 的所有者。
 
-Android 15 / Linux 6.6 LTS:
+Android 15 / Linux 6.6 LTS：
 
 ```bash
 gh workflow run main.yml \
@@ -129,7 +129,7 @@ gh workflow run main.yml \
   -f use_cache=false
 ```
 
-Android 14 / Linux 6.1.118:
+Android 14 / Linux 6.1.118：
 
 ```bash
 gh workflow run main.yml \
@@ -144,7 +144,7 @@ gh workflow run main.yml \
   -f use_cache=false
 ```
 
-Find and watch the run:
+查找并观察运行：
 
 ```bash
 gh run list \
@@ -158,47 +158,47 @@ gh run watch \
   --exit-status
 ```
 
-## 5. Understand Source Modes and Side Effects
+## 5. 理解源码模式与副作用
 
-### Commit mode
+### Commit mode（提交模式）
 
-- `verified` is the recommended normal mode. It uses verified commits for components that the workflow pins.
-- `latest` resolves supported components from their current branch tips when the run starts.
-- `update` builds latest component tips and can edit, commit, and push verified pins back to the selected branch. Use it only when deliberately maintaining those pins. In the current workflow, the promotion job is skipped when **Kernel Version** selects only one family; it is intended for the all-family maintenance path, not the single-kernel path in this guide.
+- `verified` 是推荐的常规模式。对工作流固定的组件使用已验证提交。
+- `latest` 在运行开始时从相关组件的当前分支顶端解析受支持的组件。
+- `update` 构建最新组件顶端，并且可以向所选分支编辑、提交并推送已验证的固定版本。仅在有意维护这些固定版本时使用。在当前工作流中，当 **Kernel Version** 只选择一个家族时，提升任务会被跳过；它面向全家族维护路径，而非本指南中的单内核路径。
 
-Even `verified` is not a complete lockfile: the Android kernel branch, KernelSU-Next, some patch/helper repositories, managers, and other components can still be fetched from moving upstream tips. Keep the workflow run URL and the matching `BuildInfo` artifact for provenance.
+即使 `verified` 也不是完整的锁文件：Android 内核分支、KernelSU-Next、部分补丁/辅助仓库、管理器等组件仍可能从移动中的上游顶端拉取。请保留工作流运行 URL 及对应的 `BuildInfo` 构建产物以作来源追溯。
 
-### Release type
+### Release type（发布类型）
 
-- `Action` builds Actions artifacts and replaces the fork's `nightly` prerelease/tag with a link to that run. Use this mode for the single-family builds in this guide.
-- `Pre-Release` creates the next numbered `rN` prerelease and uploads release assets when the workflow runs the all-family path.
-- `Release` creates the next numbered `rN` stable release and uploads release assets when the workflow runs the all-family path.
+- `Action` 构建 Actions 构建产物，并将 fork 的 `nightly` 预发布/标签替换为指向该运行的链接。本指南中的单家族构建使用此模式。
+- `Pre-Release` 在工作流运行全家族路径时创建下一个带编号的 `rN` 预发布并上传发布资产。
+- `Release` 在工作流运行全家族路径时创建下一个带编号的 `rN` 稳定版并上传发布资产。
 
 > [!IMPORTANT]
-> In the current workflow, selecting one exact kernel family causes the numbered release job to be skipped because the other family jobs are skipped. Do not select `Pre-Release` or `Release` for a single-family run; use `Action`. Running all families solely to create a numbered release is expensive and is not recommended for an initial fork build.
+> 在当前工作流中，选择一个确定的家族会导致带编号的发布任务被跳过，因为其他家族任务都被跳过了。单家族运行请勿选择 `Pre-Release` 或 `Release`，请使用 `Action`。仅为了创建带编号的发布而运行全家族构建代价高昂，不建议在初次 fork 构建时使用。
 
-### Build cache
+### 构建缓存
 
-This project stores compiler caches in specially named GitHub Releases rather than using `actions/cache`. A missing cache on the first run is normal. With **Use cache** enabled, the workflow can create or update cache tags and releases in your fork. The separate **Clear Cache** workflow permanently deletes those cache releases after its confirmation input is supplied.
+本项目将编译器缓存存储在特殊命名的 GitHub Releases 中，而非使用 `actions/cache`。首次运行时缺少缓存是正常现象。启用 **Use cache** 后，工作流可以在您的 fork 中创建或更新缓存标签和发布。单独的 **清理缓存发布** 工作流在提供确认输入后，会永久删除这些缓存发布。
 
-## 6. Download the Result
+## 6. 下载构建产物
 
-From the web UI:
+通过 Web UI：
 
-1. Open the completed workflow run.
-2. Scroll to **Artifacts**.
-3. Download the artifact ending in `-AnyKernel3` for the selected root flavor.
-4. Download the matching `-BuildInfo` artifact and keep it with the kernel.
-5. Download the manager APK for the same root flavor and any required module artifacts.
+1. 打开已完成的工作流运行。
+2. 滚动到 **Artifacts**。
+3. 下载所选 Root 实现对应的以 `-AnyKernel3` 结尾的构建产物。
+4. 下载匹配的 `-BuildInfo` 构建产物并随内核一起保留。
+5. 下载同一 Root 实现对应的管理器 APK 以及任何必需的模块构建产物。
 
-Common artifacts include:
+常见构建产物包括：
 
-- `*-AnyKernel3` — kernel package contents.
-- `*-BuildInfo` — source and artifact provenance, including checksums.
-- Manager APK artifacts — install the manager matching the selected root flavor.
-- `NoMount-Metamodule` — optional mount metamodule when applicable.
+- `*-AnyKernel3` — 内核包内容。
+- `*-BuildInfo` — 源码与构建产物来源信息，包括校验和。
+- 管理器 APK 构建产物 — 安装与所选 Root 实现匹配的管理器。
+- `NoMount-Metamodule` — 适用时的可选挂载元模块。
 
-To download with GitHub CLI:
+使用 GitHub CLI 下载：
 
 ```bash
 gh run download \
@@ -211,31 +211,31 @@ gh run download \
   -D ./artifacts
 ```
 
-`gh run download` extracts each artifact into a directory. Before flashing, create the AnyKernel3 ZIP with `anykernel.sh` and the other package files at the archive root—not inside an extra parent directory.
+`gh run download` 会将每个构建产物解压到目录中。刷写前，请将 `anykernel.sh` 和其他包文件放在 AnyKernel3 ZIP 的归档根目录——不要放在额外的父目录中。
 
-Follow the [Installation Guide](installation.md), then complete the [Post-install Setup](post-install.md). Kernel Flasher requires existing root; for an unrooted first installation, see the [manual `magiskboot` method](magiskboot.md).
+再按照[安装指南](installation.md)操作，然后完成[安装后设置](post-install.md)。Kernel Flasher 需要已有 Root；对于无 Root 的首次安装，请参阅[手动 `magiskboot` 方法](magiskboot.md)。
 
-## 7. Customize Safely
+## 7. 安全地进行自定义
 
-For input-only changes such as branding, root flavor, or most feature toggles, you do not need to edit the repository. Select the values when dispatching the workflow.
+对于仅涉及输入的更改，如品牌名、Root 实现或大多数功能开关，您无需编辑仓库。在触发工作流时选择相应的值即可。
 
 > [!WARNING]
-> Keep **SUSFS** and **NoMount** enabled for now. Disabling SUSFS leaves its commit unavailable to the required metadata validation. Disabling NoMount still passes its resolved commit into the kernel build but skips the corresponding metamodule artifact. Either choice causes a later metadata step to fail, so these toggles do not currently produce a supported SUSFS-free or NoMount-free build.
+> 目前请保持 **SUSFS** 和 **NoMount** 启用。禁用 SUSFS 会导致其提交无法通过必需的元数据验证。禁用 NoMount 仍会将其解析后的提交传入内核构建，但会跳过对应的元模块构建产物。任一选择都会导致后续元数据步骤失败，因此这些开关目前无法产出受支持的无 SUSFS 或无 NoMount 构建。
 
-For source or workflow changes, keep your fork's `main` branch synchronized and work on a separate branch:
+对于源码或工作流更改，请保持 fork 的 `main` 分支同步，并在单独的分支上工作：
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/GKI_KernelSU_SUSFS.git
 cd GKI_KernelSU_SUSFS
 git remote add upstream https://github.com/WildKernels/GKI_KernelSU_SUSFS.git
 git switch -c my-kernel
-# Make and commit your changes, then:
+# 进行您的更改并提交，然后：
 git push -u origin my-kernel
 ```
 
-Run the workflow with `my-kernel` selected in the web UI or change `--ref main` to `--ref my-kernel` in the CLI examples.
+在 Web UI 中选择 `my-kernel` 运行工作流，或将 CLI 示例中的 `--ref main` 改为 `--ref my-kernel`。
 
-To update an unchanged fork `main` later:
+之后更新未改动的 fork `main`：
 
 ```bash
 git fetch upstream
@@ -244,26 +244,26 @@ git merge --ff-only upstream/main
 git push origin main
 ```
 
-If your fork's `main` contains custom commits, `--ff-only` will stop instead of rewriting them. Merge or rebase those changes deliberately; do not force-push without understanding what will be replaced.
+如果 fork 的 `main` 包含自定义提交，`--ff-only` 会停止而不是重写它们。请有意地合并或变基这些更改；不要在不了解会被替换哪些内容的情况下强制推送。
 
-## Troubleshooting
+## 故障排查
 
-### The Run workflow button is missing
+### Run workflow 按钮消失
 
-Enable workflows from the fork's **Actions** tab and confirm `main.yml` exists on the fork's default branch. You also need write access to the fork.
+从 fork 的 **Actions** 选项卡启用工作流，并确认 `main.yml` 存在于 fork 的默认分支。您还需要对 fork 拥有写权限。
 
-### No target matches the patch level
+### 没有目标匹配补丁级别
 
-Open the selected family's JSON file under [`.github/config/`](../.github/config/) and use an exact `date` or `sublevel` value. Not every family provides every sublevel, and `lts` only works where an LTS row is configured.
+打开 [`.github/config/`](../.github/config/) 下所选家族的 JSON 文件，使用确切的 `date` 或 `sublevel` 值。并非每个家族都提供每个子版本号，`lts` 仅在没有 LTS 行的配置处可用。
 
-### The workflow creates more jobs than expected
+### 工作流创建的任务数超出预期
 
-Cancel the run and check all three selectors. Use one **Kernel Version**, one **OS patch level**, and one **Root Flavor** rather than `All`.
+取消运行并检查全部三个选择器。请使用一个 **Kernel Version**、一个 **OS patch level** 和一个 **Root Flavor**，而不要使用 `All`。
 
-### Release or cache steps fail with a permission error
+### 发布或缓存步骤因权限错误失败
 
-Check **Settings → Actions → General → Workflow permissions** and the organization policy applied to the fork. Normal builds do not require a custom token.
+检查 **Settings → Actions → General → Workflow permissions** 以及应用于 fork 的组织策略。常规构建不需要自定义令牌。
 
-### The kernel builds but does not boot
+### 内核构建成功但不启动
 
-Do not retry by changing random feature switches. Restore the stock boot image, verify the exact kernel/KMI family, and collect the information requested by the project's issue templates. Generic GKI compatibility is broad, not universal.
+不要通过随机更改功能开关来重试。恢复原厂启动镜像，确认确切的内核/KMI 家族，并收集项目问题模板所要求的信息。通用 GKI 兼容性是广泛的，而非普适的。
