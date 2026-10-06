@@ -1,4 +1,4 @@
-name: Release From Run
+name: "从运行记录发布"
 
 on:
   workflow_dispatch:
