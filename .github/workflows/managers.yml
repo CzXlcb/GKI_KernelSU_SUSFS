@@ -1,4 +1,4 @@
-name: Fetch Root Managers
+name: "获取 Root 管理器"
 
 permissions:
   contents: read
